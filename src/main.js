@@ -4,6 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import BootstrapVue from 'bootstrap-vue'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -11,6 +14,9 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
+
+library.add(faPlus)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 /* eslint-disable no-new */
 new Vue({

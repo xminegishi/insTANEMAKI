@@ -3,6 +3,11 @@
     <header>
       <b-navbar type="dark" variant="info">
         <b-navbar-brand href="#">insTANEMAKI</b-navbar-brand>
+        <b-navbar-nav class="mr-5">
+          <b-nav-item>
+            <font-awesome-icon icon="plus" size="lg" />
+          </b-nav-item>
+        </b-navbar-nav>
       </b-navbar>
     </header>
     <b-container>

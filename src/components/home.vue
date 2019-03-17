@@ -1,14 +1,12 @@
 <template>
   <div id="home">
-    <div id="moguo-moguko">
-      <div class="row" v-if="loaded">
-        <div class="col-md-4" v-if="entry.Name.includes('/instanemaki')" v-for="entry in entries" :key=entry.Time>
-          <img :src="imgSource(entry)" width=60%>
-        </div>
+    <div class="row" v-if="loaded">
+      <div class="col-md-4" v-if="entry.Name.includes('/instanemaki')" v-for="entry in entries" :key=entry.Time>
+        <img :src="imgSource(entry)" width=100%>
       </div>
-      <div v-else>
-        <p>{{ msg }}</p>
-      </div>
+    </div>
+    <div id="message" v-else>
+      <p>{{ msg }}</p>
     </div>
   </div>
 </template>
@@ -97,11 +95,23 @@ export default {
 #home {
   width: 100%;
   height: 100%;
-  display: table;
 }
 
-#moguo-moguko {
+#message {
+  width: 100%;
+  height: 100%;
+  display: table;
+}
+#message p {
   display: table-cell;
   vertical-align: middle;
+}
+
+div.row {
+  margin: 15px;
+}
+
+div.col-md-4 {
+  padding: 15px;
 }
 </style>
