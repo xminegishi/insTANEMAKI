@@ -1,10 +1,15 @@
 import axios from 'axios'
 
-export default function (page, success, error) {
+export default function (key, success, error) {
+  var fd = new FormData()
+  fd.append('key', key)
+  fd.append('method', 'startup')
   axios({
     method: 'POST',
-    url: '/_upspin?' + 'key=' + page.key + '&method=startup',
-    responseType: 'json'
+    url: '/_upspin',
+    data: fd,
+    responseType: 'json',
+    config: {headers: {'Content-Type': 'multipart/form-data'}}
   })
     .then(res => {
       if (res.data.Error) {

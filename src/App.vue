@@ -1,27 +1,33 @@
 <template>
   <div id="app">
-    <header>
-      <b-navbar type="dark" variant="info">
-        <b-navbar-brand href="#">insTANEMAKI</b-navbar-brand>
-        <b-navbar-nav class="mr-5">
-          <b-nav-item>
+    <b-navbar fixed="top" type="dark" variant="info">
+      <b-navbar-brand href="#">insTANEMAKI</b-navbar-brand>
+      <b-navbar-nav class="mr-5">
+        <b-nav-item>
+          <b-button @click="showModal" size="sm" variant="info">
             <font-awesome-icon icon="plus" size="lg" />
-          </b-nav-item>
-        </b-navbar-nav>
-      </b-navbar>
-    </header>
+          </b-button>
+        </b-nav-item>
+      </b-navbar-nav>
+    </b-navbar>
     <b-container>
       <router-view/>
+      <upload></upload>
     </b-container>
   </div>
 </template>
 
 <script>
+import upload from '@/components/upload'
+
 export default {
   name: 'App',
-  data () {
-    return {
-      msg: ''
+  components: {
+    upload
+  },
+  methods: {
+    showModal () {
+      this.$root.$emit('bv::show::modal', 'modal-upload')
     }
   }
 }
@@ -36,17 +42,7 @@ export default {
   color: #2c3e50;
 }
 
-header {
-  height: 7vh;
-}
-.navbar {
-  height: 100%;
-}
 .navbar-brand {
   margin-left: 30px;
-}
-
-.container {
-  height: 93vh;
 }
 </style>

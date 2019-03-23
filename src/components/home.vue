@@ -1,41 +1,38 @@
 <template>
-  <div id="home">
-    <div class="row" v-if="loaded">
-      <div class="col-md-4" v-if="entry.Name.includes('/instanemaki')" v-for="entry in entries" :key=entry.Time>
-        <img :src="imgSource(entry)" width=100%>
+  <div class="home">
+    <div class="row" v-if="entryLoaded">
+      <div v-show="!imageLoading" class="col-md-4" v-if="checkEntry(entry)" v-for="entry in entries" :key=entry.Time>
+        <img :src="imgSource(entry)" v-on:load="loaded" width=100%>
       </div>
     </div>
-    <div id="message" v-else>
+    <div class="message" v-else>
       <p>{{ msg }}</p>
     </div>
+    <loading :active.sync="imageLoading" :is-full-page="false" color="#5bc0de" loader="dots"></loading>
   </div>
 </template>
 
 <script>
-import startup from '../api/startup'
-import list from '../api/list'
+import { mapState, mapActions } from 'vuex'
+import Loading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.css'
 
 export default {
   name: 'top',
-  data () {
-    return {
-      msg: '',
-      page: {
-        username: '',
-        path: '',
-        key: ''
-      },
-      validity: false,
-      loaded: false,
-      entries: null
-    }
-  },
   // props: {
   //   _key: {
   //     type: String,
   //     default: ''
   //   }
   // },
+  components: {
+    Loading
+  },
+  data () {
+    return {
+      loadedCounter: 0
+    }
+  },
   mounted () {
     var loc = window.location
     var keyPrefix = '#key='
@@ -43,12 +40,12 @@ export default {
     var storageKey = 'upspin-ui-key'
 
     if (loc.hash.startsWith(keyPrefix)) {
-      this.page.key = loc.hash.slice(keyPrefix.length)
+      this.$store.commit('setKey', loc.hash.slice(keyPrefix.length))
       storage.setItem(storageKey, this.page.key)
       loc.hash = ''
     } else if (storage.getItem(storageKey)) {
       // Got key from local storage.
-      this.page.key = storage.getItem(storageKey)
+      this.$store.commit('setKey', storage.getItem(storageKey))
     } else {
       // No key found.
       this.msg = 'No request key in browser URL.\n\n' +
@@ -59,32 +56,39 @@ export default {
         'but with a different hash.'
       return
     }
-
-    this.validity = false
     this.msg = 'Wait while we check the validity of your Upspin account and check connectivity to your directory server.'
-
-    startup(this.page, this.startupSuccess, this.error)
+    this.checkValidity()
+  },
+  computed: {
+    ...mapState([
+      'page',
+      'entries',
+      'msg',
+      'entryLoaded',
+      'imageLoading'
+    ])
   },
   methods: {
-    startupSuccess (data) {
-      this.page.username = data.UserName
-      this.page.path = data.LeftPath + '/instanemaki'
-      this.validity = true
-      this.msg = 'Loading files...'
-      list(this.page, this.listSuccess, this.error)
-    },
-    listSuccess (entries) {
-      this.msg = 'Load completed.'
-      this.entries = entries
-      this.loaded = true
-      // console.log(entries)
-    },
-    error (err) {
-      alert(err)
-      this.msg = 'An error occurred. Please try again.'
-    },
+    ...mapActions([
+      'checkValidity'
+    ]),
     imgSource (entry) {
       return entry.Name + '?token=' + entry.FileToken
+    },
+    checkEntry (entry) {
+      if (entry.Name.includes('/instanemaki')) {
+        return true
+      } else {
+        this.loaded()
+        return false
+      }
+    },
+    loaded () {
+      this.loadedCounter++
+      if (this.loadedCounter >= this.entries.length) {
+        this.loadedCounter = 0
+        this.$store.commit('setImageLoading', false)
+      }
     }
   }
 }
@@ -92,17 +96,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#home {
+div.home {
+  padding-top: 70px;
   width: 100%;
-  height: 100%;
+  height: 100vh;
 }
 
-#message {
+div.message {
   width: 100%;
   height: 100%;
   display: table;
 }
-#message p {
+div.message p {
   display: table-cell;
   vertical-align: middle;
 }
