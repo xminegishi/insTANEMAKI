@@ -1,7 +1,7 @@
 <template>
-  <b-modal @hide="hideUploadModal" @ok="submitPhotos(fileList)" centered id="modal-upload" title="Upload your photos"
+  <b-modal @hide="hideUploadModal" @ok="handleOk" centered id="modal-upload" title="Upload your photos"
   :ok-disabled="fileList.length == 0" ok-only ok-title="Upload">
-    <div id="upload-photos" ref="photos">
+    <div v-if="!photoUploading" ref="photos">
       <div v-if="fileList.length == 0">
         <font-awesome-icon icon="images" size="7x" />
         <p>Drop here</p>
@@ -16,11 +16,15 @@
         </b-list-group-item>
       </b-list-group>
     </div>
+    <div v-else>
+      <font-awesome-icon icon="upload" size="7x" />
+      <p>Now uploading...</p>
+    </div>
   </b-modal>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'upload',
@@ -48,10 +52,20 @@ export default {
       this.getImagePreviews()
     }.bind(this))
   },
+  computed: {
+    ...mapState([
+      'photoUploading'
+    ])
+  },
   methods: {
     ...mapActions([
       'submitPhotos'
     ]),
+    handleOk (e) {
+      // console.log('prevent')
+      e.preventDefault()
+      this.submitPhotos(this.fileList)
+    },
     hideUploadModal () {
       // console.log('hide modal')
       this.fileList = []
@@ -84,6 +98,12 @@ export default {
     },
     removeFile (key) {
       this.fileList.splice(key, 1)
+    }
+  },
+  watch: {
+    photoUploading: function (status) {
+      // console.log(status)
+      if (!status) this.$root.$emit('bv::hide::modal', 'modal-upload')
     }
   }
 }

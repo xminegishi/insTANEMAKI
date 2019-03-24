@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="row" v-if="entryLoaded">
-      <div v-show="!imageLoading" class="col-md-4" v-if="checkEntry(entry)" v-for="entry in entries" :key=entry.Time>
+      <div v-show="!photoLoading" class="col-md-4" v-if="checkEntry(entry)" v-for="entry in entries" :key=entry.Time>
         <img :src="imgSource(entry)" v-on:load="loaded" v-on:dblclick="showDeleteModal(entry)" width=100%>
       </div>
       <b-modal @hide="hideDeleteModal" @ok="deletePhoto(selectedImage)" id="modal-delete" title="Delete selected photo" ok-title="Delete">
@@ -13,7 +13,7 @@
     <div class="message" v-else>
       <p>{{ msg }}</p>
     </div>
-    <loading :active.sync="imageLoading" :is-full-page="false" color="#5bc0de" loader="dots"></loading>
+    <loading :active.sync="photoLoading" :is-full-page="false" color="#5bc0de" loader="dots"></loading>
   </div>
 </template>
 
@@ -71,7 +71,7 @@ export default {
       'entries',
       'msg',
       'entryLoaded',
-      'imageLoading'
+      'photoLoading'
     ])
   },
   methods: {
@@ -94,7 +94,7 @@ export default {
       this.loadedCounter++
       if (this.loadedCounter >= this.entries.length) {
         this.loadedCounter = 0
-        this.$store.commit('setImageLoading', false)
+        this.$store.commit('setPhotoLoading', false)
       }
     },
     showDeleteModal (entry) {

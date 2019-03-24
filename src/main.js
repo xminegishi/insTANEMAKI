@@ -6,7 +6,7 @@ import router from './router'
 import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlus, faImages } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faImages, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -16,7 +16,7 @@ Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
 
-library.add(faPlus, faImages)
+library.add(faPlus, faImages, faUpload)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 /* eslint-disable no-new */

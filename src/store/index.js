@@ -17,7 +17,8 @@ export default new Vuex.Store({
     entries: null,
     msg: '',
     entryLoaded: false,
-    imageLoading: false
+    photoLoading: false,
+    photoUploading: false
   },
   actions: {
     initPage ({ commit }, { username, path, key }) {
@@ -40,7 +41,7 @@ export default new Vuex.Store({
         commit('setMsg', 'Load completed.')
         commit('setEntries', entries)
         commit('setEntryLoaded', true)
-        if (state.entries.length > 0) commit('setImageLoading', true)
+        if (state.entries.length > 0) commit('setPhotoLoading', true)
       }, function (err) {
         commit('setMsg', 'An error occurred. Please try again.')
         commit('setEntries', null)
@@ -48,17 +49,20 @@ export default new Vuex.Store({
         alert(err)
       })
     },
-    submitPhotos ({ state, dispatch }, fileList) {
+    submitPhotos ({ state, commit, dispatch }, fileList) {
+      commit('setPhotoUploading', true)
       put(state.page.key, state.page.path, fileList, function () {
         // console.log('put succeeded')
+        commit('setPhotoUploading', false)
         dispatch('loadEntries')
       }, function (err) {
+        commit('setPhotoUploading', false)
         alert(err)
       })
     },
     deletePhoto ({ state, dispatch }, entry) {
       rm(state.page.key, entry.Name, function () {
-        console.log('rm succeeded')
+        // console.log('rm succeeded')
         dispatch('loadEntries')
       }, function (err) {
         alert(err)
@@ -89,8 +93,11 @@ export default new Vuex.Store({
     setEntries (state, entries) {
       state.entries = entries
     },
-    setImageLoading (state, imageLoading) {
-      state.imageLoading = imageLoading
+    setPhotoLoading (state, photoLoading) {
+      state.photoLoading = photoLoading
+    },
+    setPhotoUploading (state, photoUploading) {
+      state.photoUploading = photoUploading
     }
   }
 })

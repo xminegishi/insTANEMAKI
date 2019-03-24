@@ -1,9 +1,6 @@
 import axios from 'axios'
 
 export default function (key, path, files, success, error) {
-  // For the file upload to work, we need to pass the files in as
-  // a FormData object and turn off any of the pre-processing
-  // jQuery might do.
   var fd = new FormData()
   fd.append('key', key)
   fd.append('method', 'put')
