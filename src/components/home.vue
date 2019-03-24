@@ -2,8 +2,13 @@
   <div class="home">
     <div class="row" v-if="entryLoaded">
       <div v-show="!imageLoading" class="col-md-4" v-if="checkEntry(entry)" v-for="entry in entries" :key=entry.Time>
-        <img :src="imgSource(entry)" v-on:load="loaded" width=100%>
+        <img :src="imgSource(entry)" v-on:load="loaded" v-on:dblclick="showDeleteModal(entry)" width=100%>
       </div>
+      <b-modal @hide="hideDeleteModal" @ok="deletePhoto(selectedImage)" id="modal-delete" title="Delete selected photo" ok-title="Delete">
+        <div class="rm-item" v-if="selectedImage">
+          <img :src="imgSource(selectedImage)">
+        </div>
+      </b-modal>
     </div>
     <div class="message" v-else>
       <p>{{ msg }}</p>
@@ -30,7 +35,8 @@ export default {
   },
   data () {
     return {
-      loadedCounter: 0
+      loadedCounter: 0,
+      selectedImage: null
     }
   },
   mounted () {
@@ -48,15 +54,15 @@ export default {
       this.$store.commit('setKey', storage.getItem(storageKey))
     } else {
       // No key found.
-      this.msg = 'No request key in browser URL.\n\n' +
+      this.$store.commit('setMsg', 'No request key in browser URL.\n\n' +
         'To use the Upspin browser, click the URL\n' +
         'that it printed to the console.\n\n' +
         'It will look something like\n' +
         'http://localhost:8000/#key=3f0cf1e29...\n' +
-        'but with a different hash.'
+        'but with a different hash.')
       return
     }
-    this.msg = 'Wait while we check the validity of your Upspin account and check connectivity to your directory server.'
+    this.$store.commit('setMsg', 'Wait while we check the validity of your Upspin account and check connectivity to your directory server.')
     this.checkValidity()
   },
   computed: {
@@ -70,7 +76,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'checkValidity'
+      'checkValidity',
+      'deletePhoto'
     ]),
     imgSource (entry) {
       return entry.Name + '?token=' + entry.FileToken
@@ -89,6 +96,14 @@ export default {
         this.loadedCounter = 0
         this.$store.commit('setImageLoading', false)
       }
+    },
+    showDeleteModal (entry) {
+      // console.log(entry)
+      this.selectedImage = entry
+      this.$root.$emit('bv::show::modal', 'modal-delete')
+    },
+    hideDeleteModal () {
+      this.selectedImage = null
     }
   }
 }
@@ -118,5 +133,16 @@ div.row {
 
 div.col-md-4 {
   padding: 15px;
+}
+
+div.rm-item {
+  width: 400px;
+  margin: auto;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+div.rm-item img {
+  height: 100px;
 }
 </style>

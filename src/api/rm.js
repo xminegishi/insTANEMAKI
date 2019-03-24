@@ -1,21 +1,25 @@
 import axios from 'axios'
 
-export default function (paths, success, error) {
-  $.ajax("/_upspin", {
-    method: "POST",
-    data: {
-      key: page.key,
-      method: "rm",
-      paths: paths
-    },
-    dataType: "json",
-    success: function(data) {
-      if (data.Error) {
-        error(data.Error);
-        return;
+export default function (key, path, success, error) {
+  var fd = new FormData()
+  fd.append('key', key)
+  fd.append('method', 'rm')
+  fd.append('paths[]', path)
+  axios({
+    method: 'POST',
+    url: '/_upspin',
+    data: fd,
+    responseType: 'json',
+    config: {headers: {'Content-Type': 'multipart/form-data'}}
+  })
+    .then(res => {
+      if (res.data.Error) {
+        error(res.data.Error)
+        return
       }
-      success();
-    },
-    error: errorHandler(error)
-  });
+      success()
+    })
+    .catch(err => {
+      error(err)
+    })
 }

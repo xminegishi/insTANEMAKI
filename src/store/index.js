@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import startup from '../api/startup'
 import list from '../api/list'
 import put from '../api/put'
+import rm from '../api/rm'
 
 Vue.use(Vuex)
 
@@ -47,9 +48,17 @@ export default new Vuex.Store({
         alert(err)
       })
     },
-    submitImages ({ state, dispatch }, fileList) {
+    submitPhotos ({ state, dispatch }, fileList) {
       put(state.page.key, state.page.path, fileList, function () {
         // console.log('put succeeded')
+        dispatch('loadEntries')
+      }, function (err) {
+        alert(err)
+      })
+    },
+    deletePhoto ({ state, dispatch }, entry) {
+      rm(state.page.key, entry.Name, function () {
+        console.log('rm succeeded')
         dispatch('loadEntries')
       }, function (err) {
         alert(err)

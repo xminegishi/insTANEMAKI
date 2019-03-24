@@ -1,5 +1,5 @@
 <template>
-  <b-modal @show="showModal" @hide="hiddenModal" @ok="submitImages(fileList)" centered id="modal-upload" title="Upload your photos"
+  <b-modal @hide="hideUploadModal" @ok="submitPhotos(fileList)" centered id="modal-upload" title="Upload your photos"
   :ok-disabled="fileList.length == 0" ok-only ok-title="Upload">
     <div id="upload-photos" ref="photos">
       <div v-if="fileList.length == 0">
@@ -50,12 +50,9 @@ export default {
   },
   methods: {
     ...mapActions([
-      'submitImages'
+      'submitPhotos'
     ]),
-    showModal () {
-      // console.log('show modal')
-    },
-    hiddenModal () {
+    hideUploadModal () {
       // console.log('hide modal')
       this.fileList = []
     },

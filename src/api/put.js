@@ -16,7 +16,8 @@ export default function (key, path, files, success, error) {
     method: 'POST',
     url: '/_upspin',
     data: fd,
-    responseType: 'json'
+    responseType: 'json',
+    config: {headers: {'Content-Type': 'multipart/form-data'}}
   })
     .then(res => {
       if (res.data.Error) {
@@ -28,21 +29,4 @@ export default function (key, path, files, success, error) {
     .catch(err => {
       error(err)
     })
-
-  // $.ajax("/_upspin", {
-  //   method: "POST",
-  //   data: fd,
-  //   contentType: false,
-  //   processData: false,
-  //   cache: false,
-  //   datType: "json",
-  //   success: function(data) {
-  //     if (data.Error) {
-  //       error(data.Error);
-  //       return;
-  //     }
-  //     success();
-  //   },
-  //   error: errorHandler(error)
-  // });
 }

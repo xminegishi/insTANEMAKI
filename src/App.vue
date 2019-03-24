@@ -2,9 +2,9 @@
   <div id="app">
     <b-navbar fixed="top" type="dark" variant="info">
       <b-navbar-brand href="#">insTANEMAKI</b-navbar-brand>
-      <b-navbar-nav class="mr-5">
+      <b-navbar-nav class="ml-auto mr-5">
         <b-nav-item>
-          <b-button @click="showModal" size="sm" variant="info">
+          <b-button @click="showUploadModal" size="sm" variant="info">
             <font-awesome-icon icon="plus" size="lg" />
           </b-button>
         </b-nav-item>
@@ -26,7 +26,7 @@ export default {
     upload
   },
   methods: {
-    showModal () {
+    showUploadModal () {
       this.$root.$emit('bv::show::modal', 'modal-upload')
     }
   }
